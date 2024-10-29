@@ -1,0 +1,35 @@
+name: Update Proxy List
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # 每小时执行一次
+
+jobs:
+  update-proxy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download proxy list
+        run: |
+          curl -s "https://fineproxy.org/wp-admin/admin-ajax.php?action=proxylister_download&nonce=a6998eed3f&format=txt&filter=%7B%7D" -o proxy.txt
+
+      - name: Check if file is updated
+        run: |
+          if [[ -s proxy.txt ]]; then
+            echo "File is not empty, proceeding to commit."
+          else
+            echo "File is empty, exiting."
+            exit 1
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "zycool@yandex.com"
+          git config --local user.name "zyku-svip"
+          git add proxy.txt
+          git commit -m "Update proxy list" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
