@@ -17,8 +17,8 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git config --local user.email "you@example.com"
-          git config --local user.name "Your Name"
+          git config --local user.email "zycool@yandex.com"
+          git config --local user.name "svip-zyku"
           git add proxy.txt
           git commit -m "Update proxy list" || echo "No changes to commit"
           git push
